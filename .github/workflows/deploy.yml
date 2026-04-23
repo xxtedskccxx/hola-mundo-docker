@@ -51,7 +51,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Deploy en Render
-        if: ${{ secrets.RENDER_DEPLOY_HOOK_URL != '' }}
-        run: curl "$RENDER_DEPLOY_HOOK_URL"
-        env:
-          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" ]; then
+            curl "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          else
+            echo "No hay deploy hook de Render configurado. Se omite este paso."
+          fi
